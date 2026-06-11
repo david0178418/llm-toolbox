@@ -1,0 +1,7 @@
+interface:
+  display_name: "Simplify"
+  short_description: "Clean up recent code changes safely"
+  default_prompt: "Use $simplify to clean up the recent code changes while preserving behavior."
+
+policy:
+  allow_implicit_invocation: true

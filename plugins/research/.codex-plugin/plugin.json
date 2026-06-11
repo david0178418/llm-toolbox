@@ -1,0 +1,6 @@
+{
+	"name": "research",
+	"version": "0.1.0",
+	"description": "Research workflows for turning external source material into compact, evidence-backed agent handoff artifacts.",
+	"skills": "./skills/"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Task Orchestrator"
+  short_description: "Extract timestamped research briefs from video sources"
+  default_prompt: "Use $video-task-orchestrator to extract a timestamped research brief from these video sources."

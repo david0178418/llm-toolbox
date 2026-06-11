@@ -1,0 +1,37 @@
+{
+	"name": "llm-toolbox",
+	"plugins": [
+		{
+			"name": "general-coding",
+			"source": {
+				"source": "local",
+				"path": "./plugins/general-coding"
+			},
+			"policy": {
+				"installation": "AVAILABLE",
+				"authentication": "ON_INSTALL"
+			},
+			"category": "Productivity",
+			"interface": {
+				"displayName": "General Coding",
+				"description": "General software engineering workflows for code cleanup, refactoring, review, and maintenance."
+			}
+		},
+		{
+			"name": "research",
+			"source": {
+				"source": "local",
+				"path": "./plugins/research"
+			},
+			"policy": {
+				"installation": "AVAILABLE",
+				"authentication": "ON_INSTALL"
+			},
+			"category": "Productivity",
+			"interface": {
+				"displayName": "Research",
+				"description": "Research workflows for turning external source material into compact, evidence-backed agent handoff artifacts."
+			}
+		}
+	]
+}

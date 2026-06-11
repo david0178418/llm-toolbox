@@ -1,0 +1,6 @@
+{
+	"name": "general-coding",
+	"version": "0.1.0",
+	"description": "General software engineering workflows for code cleanup, refactoring, review, and maintenance.",
+	"skills": "./skills/"
+}

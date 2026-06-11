@@ -1,0 +1,22 @@
+{
+	"id": "general-coding",
+	"name": "General Coding",
+	"version": "0.1.0",
+	"description": "General software engineering workflows for code cleanup, refactoring, review, and maintenance.",
+	"capabilities": [
+		"skills",
+		"agents"
+	],
+	"skills": [
+		{
+			"id": "simplify",
+			"path": "skills/simplify",
+			"description": "Clean up recent code changes while preserving behavior."
+		}
+	],
+	"targets": {
+		"codex": "generated",
+		"claude": "generated",
+		"grok": "via-claude-compatibility"
+	}
+}

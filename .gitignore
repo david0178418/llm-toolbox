@@ -1,0 +1,5 @@
+dist/
+agent-todos.local.md
+__pycache__/
+*.pyc
+

@@ -1,0 +1,24 @@
+{
+	"id": "research",
+	"name": "Research",
+	"version": "0.1.0",
+	"description": "Research workflows for turning external source material into compact, evidence-backed agent handoff artifacts.",
+	"capabilities": [
+		"skills",
+		"agents",
+		"scripts",
+		"references"
+	],
+	"skills": [
+		{
+			"id": "video-task-orchestrator",
+			"path": "skills/video-task-orchestrator",
+			"description": "Extract timestamped research briefs from video sources."
+		}
+	],
+	"targets": {
+		"codex": "generated",
+		"claude": "generated",
+		"grok": "via-claude-compatibility"
+	}
+}

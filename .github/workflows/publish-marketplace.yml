@@ -1,0 +1,47 @@
+name: Publish marketplace branch
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build marketplace artifacts
+        run: python3 scripts/build_marketplaces.py
+
+      - name: Publish marketplace branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git clone --depth 1 --branch marketplace "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPOSITORY}.git" /tmp/marketplace-branch || true
+          if [ ! -d /tmp/marketplace-branch/.git ]; then
+            git init /tmp/marketplace-branch
+            git -C /tmp/marketplace-branch remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
+            git -C /tmp/marketplace-branch checkout -b marketplace
+          fi
+          find /tmp/marketplace-branch -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -R dist/marketplace/. /tmp/marketplace-branch/
+          git -C /tmp/marketplace-branch add --all
+          if git -C /tmp/marketplace-branch diff --cached --quiet; then
+            echo "Marketplace branch is already current."
+            exit 0
+          fi
+          git -C /tmp/marketplace-branch commit -m "Publish marketplace artifacts"
+          git -C /tmp/marketplace-branch push origin marketplace
+

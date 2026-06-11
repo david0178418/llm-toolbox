@@ -21,13 +21,13 @@ python3 scripts/check.py
 Codex:
 
 ```bash
-codex plugin marketplace add david017841/llm-toolbox --ref marketplace --sparse .agents/plugins --sparse plugins
+codex plugin marketplace add david0178418/llm-toolbox --ref marketplace --sparse .agents/plugins --sparse plugins
 ```
 
 Claude Code:
 
 ```bash
-claude plugin marketplace add david017841/llm-toolbox@marketplace --sparse .claude-plugin plugins
+claude plugin marketplace add david0178418/llm-toolbox@marketplace --sparse .claude-plugin plugins
 ```
 
 Grok reads Claude Code marketplaces and plugins, so use the Claude-compatible marketplace branch unless a Grok-native package format becomes necessary.

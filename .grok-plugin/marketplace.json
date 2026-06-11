@@ -1,0 +1,43 @@
+{
+	"name": "llm-toolbox",
+	"owner": {
+		"name": "llm-toolbox"
+	},
+	"description": "Shareable coding-agent plugins from llm-toolbox.",
+	"plugins": [
+		{
+			"name": "general-coding",
+			"description": "General software engineering workflows for code cleanup, refactoring, review, and maintenance.",
+			"source": {
+				"source": "local",
+				"path": "./plugins/general-coding"
+			},
+			"category": "development",
+			"keywords": [
+				"simplify",
+				"refactor",
+				"cleanup",
+				"maintenance"
+			]
+		},
+		{
+			"name": "research",
+			"description": "Research workflows for turning external source material into compact, evidence-backed agent handoff artifacts.",
+			"source": {
+				"source": "local",
+				"path": "./plugins/research"
+			},
+			"category": "research",
+			"keywords": [
+				"video",
+				"youtube",
+				"research",
+				"video-task-orchestrator"
+			],
+			"domains": [
+				"youtube.com",
+				"youtu.be"
+			]
+		}
+	]
+}

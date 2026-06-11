@@ -16,9 +16,22 @@
 			"description": "Extract timestamped research briefs from video sources."
 		}
 	],
+	"grok": {
+		"category": "research",
+		"keywords": [
+			"video",
+			"youtube",
+			"research",
+			"video-task-orchestrator"
+		],
+		"domains": [
+			"youtube.com",
+			"youtu.be"
+		]
+	},
 	"targets": {
 		"codex": "generated",
 		"claude": "generated",
-		"grok": "via-claude-compatibility"
+		"grok": "generated"
 	}
 }

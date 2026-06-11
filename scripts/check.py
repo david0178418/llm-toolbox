@@ -27,8 +27,10 @@ def check_plugin_artifacts(root: Path, plugin_id: str) -> None:
 	plugin_root = root / "plugins" / plugin_id
 	require_file(plugin_root / ".codex-plugin" / "plugin.json")
 	require_file(plugin_root / ".claude-plugin" / "plugin.json")
+	require_file(plugin_root / ".grok-plugin" / "plugin.json")
 	read_json(plugin_root / ".codex-plugin" / "plugin.json")
 	read_json(plugin_root / ".claude-plugin" / "plugin.json")
+	read_json(plugin_root / ".grok-plugin" / "plugin.json")
 
 
 def check() -> None:
@@ -43,8 +45,10 @@ def check() -> None:
 		)
 		require_file(output / ".agents" / "plugins" / "marketplace.json")
 		require_file(output / ".claude-plugin" / "marketplace.json")
+		require_file(output / ".grok-plugin" / "marketplace.json")
 		read_json(output / ".agents" / "plugins" / "marketplace.json")
 		read_json(output / ".claude-plugin" / "marketplace.json")
+		read_json(output / ".grok-plugin" / "marketplace.json")
 		for plugin in plugins:
 			check_plugin_artifacts(output, plugin.id)
 

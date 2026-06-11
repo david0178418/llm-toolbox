@@ -12,6 +12,14 @@ from typing import Any
 
 
 @dataclass(frozen=True)
+class GrokMetadata:
+	category: str | None = None
+	keywords: tuple[str, ...] = ()
+	domains: tuple[str, ...] = ()
+	homepage: str | None = None
+
+
+@dataclass(frozen=True)
 class Plugin:
 	id: str
 	name: str
@@ -19,10 +27,11 @@ class Plugin:
 	description: str
 	has_skills: bool
 	source_path: Path
+	grok: GrokMetadata = GrokMetadata()
 
 
 def parse_args() -> argparse.Namespace:
-	parser = argparse.ArgumentParser(description="Build Codex and Claude marketplace artifacts.")
+	parser = argparse.ArgumentParser(description="Build Codex, Claude, and Grok marketplace artifacts.")
 	parser.add_argument("--plugins-dir", default="plugins", help="Canonical plugin source directory.")
 	parser.add_argument("--output", default="dist/marketplace", help="Generated marketplace output directory.")
 	parser.add_argument("--marketplace-name", default="llm-toolbox", help="Marketplace identifier.")
@@ -68,6 +77,41 @@ def has_valid_skills(value: Any, path: Path) -> bool:
 	return bool(value)
 
 
+def read_string_list(value: Any, key: str, path: Path) -> tuple[str, ...]:
+	field = value.get(key)
+	if field is None:
+		return ()
+
+	if not isinstance(field, list) or not all(isinstance(item, str) and item for item in field):
+		raise ValueError(f"{path} grok.{key} must be an array of non-empty strings")
+
+	return tuple(field)
+
+
+def read_grok_metadata(value: dict[str, Any], path: Path) -> GrokMetadata:
+	grok = value.get("grok")
+	if grok is None:
+		return GrokMetadata()
+
+	if not isinstance(grok, dict):
+		raise ValueError(f"{path} grok must be an object")
+
+	category = grok.get("category")
+	if category is not None and not isinstance(category, str):
+		raise ValueError(f"{path} grok.category must be a string")
+
+	homepage = grok.get("homepage")
+	if homepage is not None and not isinstance(homepage, str):
+		raise ValueError(f"{path} grok.homepage must be a string")
+
+	return GrokMetadata(
+		category=category,
+		keywords=read_string_list(grok, "keywords", path),
+		domains=read_string_list(grok, "domains", path),
+		homepage=homepage,
+	)
+
+
 def read_plugin(path: Path) -> Plugin:
 	manifest_path = path / "plugin.json"
 	value = read_json(manifest_path)
@@ -79,6 +123,7 @@ def read_plugin(path: Path) -> Plugin:
 		description=require_string(value, "description", manifest_path),
 		has_skills=has_valid_skills(value.get("skills"), manifest_path),
 		source_path=path,
+		grok=read_grok_metadata(value, manifest_path),
 	)
 
 
@@ -143,6 +188,10 @@ def claude_manifest(plugin: Plugin) -> dict[str, Any]:
 	return value
 
 
+def grok_manifest(plugin: Plugin) -> dict[str, Any]:
+	return claude_manifest(plugin)
+
+
 def codex_marketplace_entry(plugin: Plugin, category: str) -> dict[str, Any]:
 	return {
 		"name": plugin.id,
@@ -170,11 +219,34 @@ def claude_marketplace_entry(plugin: Plugin) -> dict[str, Any]:
 	}
 
 
+def grok_marketplace_entry(plugin: Plugin) -> dict[str, Any]:
+	entry: dict[str, Any] = {
+		"name": plugin.id,
+		"description": plugin.description,
+		"source": {
+			"source": "local",
+			"path": f"./plugins/{plugin.id}",
+		},
+	}
+
+	if plugin.grok.category:
+		entry["category"] = plugin.grok.category
+	if plugin.grok.keywords:
+		entry["keywords"] = list(plugin.grok.keywords)
+	if plugin.grok.domains:
+		entry["domains"] = list(plugin.grok.domains)
+	if plugin.grok.homepage:
+		entry["homepage"] = plugin.grok.homepage
+
+	return entry
+
+
 def write_plugin(plugin: Plugin, output: Path) -> None:
 	target = output / "plugins" / plugin.id
 	copy_plugin_source(plugin, target)
 	write_json(target / ".codex-plugin" / "plugin.json", codex_manifest(plugin))
 	write_json(target / ".claude-plugin" / "plugin.json", claude_manifest(plugin))
+	write_json(target / ".grok-plugin" / "plugin.json", grok_manifest(plugin))
 
 
 def write_marketplaces(
@@ -200,6 +272,17 @@ def write_marketplaces(
 			},
 			"description": "Shareable coding-agent plugins from llm-toolbox.",
 			"plugins": [claude_marketplace_entry(plugin) for plugin in plugins],
+		},
+	)
+	write_json(
+		output / ".grok-plugin" / "marketplace.json",
+		{
+			"name": marketplace_name,
+			"owner": {
+				"name": owner_name,
+			},
+			"description": "Shareable coding-agent plugins from llm-toolbox.",
+			"plugins": [grok_marketplace_entry(plugin) for plugin in plugins],
 		},
 	)
 

@@ -30,7 +30,15 @@ Claude Code:
 claude plugin marketplace add david0178418/llm-toolbox@marketplace --sparse .claude-plugin plugins
 ```
 
-Grok reads Claude Code marketplaces and plugins, so use the Claude-compatible marketplace branch unless a Grok-native package format becomes necessary.
+Grok Build:
+
+```bash
+grok plugin marketplace add david0178418/llm-toolbox@marketplace
+grok plugin install general-coding --trust
+grok plugin install research --trust
+```
+
+Grok also falls back to the Claude-compatible marketplace and plugin manifests when `.grok-plugin/` artifacts are absent.
 
 ## Source Layout
 
@@ -51,5 +59,9 @@ plugins/
 - Codex marketplace: `.agents/plugins/marketplace.json`
 - Claude plugin manifest: `plugins/<id>/.claude-plugin/plugin.json`
 - Claude marketplace: `.claude-plugin/marketplace.json`
+- Grok plugin manifest: `plugins/<id>/.grok-plugin/plugin.json`
+- Grok marketplace: `.grok-plugin/marketplace.json`
+
+Optional `grok` metadata in the source manifest (`category`, `keywords`, `domains`, `homepage`) is copied into the generated Grok marketplace entries.
 
 The generated branch intentionally contains build artifacts. `main` should only contain source manifests, plugin content, build scripts, docs, and CI.

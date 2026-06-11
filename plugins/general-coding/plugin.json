@@ -14,9 +14,18 @@
 			"description": "Clean up recent code changes while preserving behavior."
 		}
 	],
+	"grok": {
+		"category": "development",
+		"keywords": [
+			"simplify",
+			"refactor",
+			"cleanup",
+			"maintenance"
+		]
+	},
 	"targets": {
 		"codex": "generated",
 		"claude": "generated",
-		"grok": "via-claude-compatibility"
+		"grok": "generated"
 	}
 }

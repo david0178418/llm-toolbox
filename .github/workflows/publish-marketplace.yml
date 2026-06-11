@@ -27,14 +27,13 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git clone --depth 1 --branch marketplace "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPOSITORY}.git" /tmp/marketplace-branch || true
           if [ ! -d /tmp/marketplace-branch/.git ]; then
-            git init /tmp/marketplace-branch
+            git init --initial-branch=marketplace /tmp/marketplace-branch
             git -C /tmp/marketplace-branch remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
-            git -C /tmp/marketplace-branch checkout -b marketplace
           fi
+          git -C /tmp/marketplace-branch config user.name "github-actions[bot]"
+          git -C /tmp/marketplace-branch config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           find /tmp/marketplace-branch -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp -R dist/marketplace/. /tmp/marketplace-branch/
           git -C /tmp/marketplace-branch add --all
@@ -44,4 +43,3 @@ jobs:
           fi
           git -C /tmp/marketplace-branch commit -m "Publish marketplace artifacts"
           git -C /tmp/marketplace-branch push origin marketplace
-
